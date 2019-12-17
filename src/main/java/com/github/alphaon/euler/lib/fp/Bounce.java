@@ -50,6 +50,11 @@ public abstract class Bounce<T> {
         private Done(T v) {
             this.v = v;
         }
+
+        @Override
+        public String toString() {
+            return "Done{v=" + v + '}';
+        }
     }
 
     private static final class Call<T> extends Bounce<T> {
