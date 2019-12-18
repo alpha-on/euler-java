@@ -38,5 +38,9 @@ class BounceTest {
         Function<Integer, Bounce<Integer>> mul = (Integer i) -> Bounce.call(() -> done(i * 2));
         Assertions.assertEquals(2, done(0).flatMap(inc).flatMap(mul).eval(), "Done(mul ° inc)");
         Assertions.assertEquals(2, Bounce.call(() -> done(0)).flatMap(inc).flatMap(mul).eval(), "Call(mul ° inc)");
+
+        Function<Integer, Bounce<String>> asString = (Integer i) -> done("*" + i.toString() + "*");
+        Assertions.assertEquals("*2*", done(0).flatMap(inc).flatMap(mul).flatMap(asString).eval(), "Done(mul ° inc)");
+        Assertions.assertEquals("*2*", Bounce.call(() -> done(0)).flatMap(inc).flatMap(mul).flatMap(asString).eval(), "Call(mul ° inc)");
     }
 }

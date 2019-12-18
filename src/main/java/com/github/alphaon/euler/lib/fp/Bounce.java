@@ -1,7 +1,5 @@
 package com.github.alphaon.euler.lib.fp;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -17,23 +15,18 @@ public abstract class Bounce<T> {
         return new Call<>(thunk);
     }
 
-    public T eval() {
-        var stack = new LinkedList(List.of(this));
-        Object lastValue = null;
-        while (!stack.isEmpty()) {
-            var b = stack.pop();
-            if (b instanceof Done) {
-                lastValue = ((Done) b).v;
-            } else if (b instanceof Call) {
-                stack.push(((Call) b).thunk.get());
-            } else if (b instanceof FlatMapped) {
-                stack.push(((FlatMapped) b).transform);
-                stack.push(((FlatMapped) b).src);
-            } else if (b instanceof Transform) {
-                stack.push(((Transform) b).t.apply(lastValue));
-            } else throw new IllegalStateException("Unexpected Bounce type: " + b.getClass().getSimpleName());
+    public final T eval() {
+        Bounce<?> current = this;
+        while (!(current instanceof Done)) {
+            if (current instanceof Call) {
+                current = ((Call<?>) current).collapse();
+            } else if (current instanceof Bounce.FlatMap<?, ?>) {
+                current = ((FlatMap<?, ?>) current).collapse();
+            } else {
+                throw new IllegalStateException("Unexpected Bounce type: " + current.getClass().getSimpleName());
+            }
         }
-        return (T) lastValue;
+        return ((Done<T>) current).v;
     }
 
     public final <R> Bounce<R> map(Function<T, R> f) {
@@ -41,7 +34,7 @@ public abstract class Bounce<T> {
     }
 
     public final <R> Bounce<R> flatMap(Function<T, Bounce<R>> f) {
-        return new FlatMapped<>(this, f);
+        return new FlatMap<>(this, f);
     }
 
     private static final class Done<T> extends Bounce<T> {
@@ -63,23 +56,35 @@ public abstract class Bounce<T> {
         private Call(Supplier<Bounce<T>> thunk) {
             this.thunk = thunk;
         }
-    }
 
-    private static final class FlatMapped<T, R> extends Bounce<R> {
-        private final Bounce<T> src;
-        private final Transform<T, R> transform;
-
-        public FlatMapped(Bounce<T> src, Function<T, Bounce<R>> transform) {
-            this.src = src;
-            this.transform = new Transform<>(transform);
+        private Bounce<T> collapse() {
+            return thunk.get();
         }
     }
 
-    private static final class Transform<T, R> extends Bounce<R> {
-        private final Function<T, Bounce<R>> t;
+    private static final class FlatMap<T, R> extends Bounce<R> {
+        private final Bounce<T> src;
+        private final Function<T, Bounce<R>> transform;
 
-        public Transform(Function<T, Bounce<R>> t) {
-            this.t = t;
+        private FlatMap(Bounce<T> src, Function<T, Bounce<R>> transform) {
+            this.src = src;
+            this.transform = transform;
+        }
+
+        private Bounce<R> collapse() {
+            if (src instanceof Done) {
+                return transform.apply(((Done<T>) src).v);
+            } else if (src instanceof Call) {
+                return new FlatMap<>(((Call<T>) src).thunk.get(), transform);
+            } else if (src instanceof Bounce.FlatMap) {
+                FlatMap<Object, T> fmSrc = (FlatMap<Object, T>) src;
+                return new FlatMap<>(
+                        fmSrc.src,
+                        (x) -> new FlatMap<>(fmSrc.transform.apply(x), transform)
+                );
+            } else {
+                throw new IllegalStateException("Unexpected Bounce type: " + src.getClass().getSimpleName());
+            }
         }
     }
 }
