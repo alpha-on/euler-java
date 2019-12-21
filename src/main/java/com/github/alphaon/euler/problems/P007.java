@@ -1,7 +1,9 @@
 package com.github.alphaon.euler.problems;
 
 
-import java.util.Collection;
+import com.github.alphaon.euler.lib.Library;
+
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,21 +12,17 @@ import java.util.List;
  */
 public class P007 {
 
-    private boolean isPrimeNumber(Collection<Integer> knownPrimeNumbers, Integer v) {
-        var limit = Math.sqrt(v);
-        return knownPrimeNumbers.stream().takeWhile(it -> it <= limit).noneMatch(it -> v % it == 0);
-    }
-
-
     public String run() {
-        var knownPrimeNumbers = new LinkedList<>(List.of(2));
+        Library Lib = new Library();
+        var  res = Lib.primeNumbers().limit(10_001).max(Comparator.comparingInt(x -> x)).orElseThrow();
 
-        for (int p = 3; knownPrimeNumbers.size() < 10_001; p += 2) {
-            if (isPrimeNumber(knownPrimeNumbers, p)) knownPrimeNumbers.add(p);
-        }
-
-
-        int res = knownPrimeNumbers.getLast();
+//
+//        var knownPrimeNumbers = new LinkedList<>(List.of(2));
+//        for (int p = 3; knownPrimeNumbers.size() < 10_001; p += 2) {
+//            if (Lib.isPrimeNumber(knownPrimeNumbers, p)) knownPrimeNumbers.add(p);
+//        }
+//
+//        int res = knownPrimeNumbers.getLast();
 
         return String.valueOf(res);
 
