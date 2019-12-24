@@ -18,48 +18,48 @@ import static java.util.stream.Stream.iterate;
  */
 public class P012 {
 
-    private BigInteger triangle(BigInteger n) {
-        return n.multiply(n.add(ONE)).divide(TWO);
+    private long triangle(long n) {
+        return n * (n + 1) / 2;
     }
 
-    private Tuple2<Integer, BigInteger> countFactors(BigInteger divisor, BigInteger N) {
-        final var ret = iterate(t2(0, N), t -> t2(t.a + 1, t.b.divide(divisor)))
-                .filter(t -> !t.b.mod(divisor).equals(ZERO))
+    private Tuple2<Integer, Long> countFactors(long divisor, long N) {
+        final var ret = iterate(t2(0, N), t -> t2(t.a + 1, t.b / divisor))
+                .filter(t -> t.b % divisor != 0)
                 .findFirst()
                 .orElseThrow();
         return ret;
     }
 
-    private Tuple3<BigInteger, BigInteger, Integer> nextIter(BigInteger divisor, BigInteger N, Integer currentNbFactors, BigInteger l) {
+    private Tuple3<Long, Long, Integer> nextIter(long divisor, long N, int currentNbFactors) {
         var factors = countFactors(divisor, N);
         var nextN = factors.b;
         var isDivisorN = factors.a > 0;
-        var nextDiv = nextN.compareTo(l) >= 0 && isDivisorN ? nextN : divisor.equals(TWO) ? BigInteger.valueOf(3) : divisor.add(TWO);
-        var nextNbFactors = currentNbFactors + factors.a;
+        var nextDiv =  divisor == 2 ? 3 : divisor + 2;
+        var nextNbFactors = isDivisorN? currentNbFactors * (factors.a + 1) : currentNbFactors;
         return t3(nextDiv, nextN, nextNbFactors);
     }
 
-    private int countDivisors(BigInteger N) {
-        if (N.equals(ONE)) return 1;
-        else if (N.equals(TWO)) return 2;
-        else if (N.equals(BigInteger.valueOf(3))) return 2;
+    private int countDivisors(Long N) {
+        if (1 == N) return 1;
+        else if (N == 2) return 2;
+        else if (N == 3) return 2;
 
-        BigInteger sqrtN = N.sqrt();
+        long sqrtN = (long) Math.sqrt(N);
 
-        Predicate<Tuple3<BigInteger, BigInteger, Integer>> notHasNest = t -> t.b.compareTo(ONE) <= 0;
-        var ret = iterate(t3(TWO, N, 0), t -> nextIter(t.a, t.b, t.c, sqrtN))
+        Predicate<Tuple3<Long, Long, Integer>> notHasNest = t -> t.a > sqrtN || t.b <= 1;
+        var ret = iterate(t3(2L, N, 1), t -> nextIter(t.a, t.b, t.c))
                 .filter(notHasNest)
-                .findFirst().orElseGet(() -> t3(TWO, N, 0));
+                .findFirst().orElseGet(() -> t3(2L, N, 1));
         return ret.c + 2;
     }
 
     public String run() {
 
-        var res = Stream.iterate(TEN, n -> n.add(ONE))
+        var res = Stream.iterate(1, n -> n + 1)
                 .map(n -> t2(n, triangle(n)))
                 .map(t -> t3(t.a, t.b, countDivisors(t.b)))
                 .peek(System.out::println)
-                .filter(t ->  t.c > 20)
+                .filter(t -> t.c > 500)
                 .findFirst().orElseThrow();
 
 
