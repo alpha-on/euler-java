@@ -11,4 +11,9 @@ public class Tuple3<A, B, C> extends Tuple2<A, B> {
     public C c() {
         return c;
     }
+
+    @Override
+    public String toString() {
+        return "Tuple3{a=" + a + ", b=" + b + ", c=" + c + '}';
+    }
 }

@@ -10,4 +10,5 @@ public class Tuples {
     public static <A, B, C> Tuple3<A, B, C> t3(A a, B b, C c) {
         return new Tuple3<>(a, b, c);
     }
+
 }
