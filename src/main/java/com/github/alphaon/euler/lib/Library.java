@@ -1,17 +1,29 @@
 package com.github.alphaon.euler.lib;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Iterator;
+import java.util.function.IntSupplier;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static com.github.alphaon.euler.lib.Tuples.t2;
 import static java.util.stream.Stream.iterate;
 
-public class Library {
+public final class Library {
+
+    private final LinkedNode<Integer> knownPrimeNumbers = new LinkedNode<Integer>().append(2, 3, 5, 7, 11, 13, 17, 19);
+
+
+    private Library() {
+    }
+
+
+    public static Library newInstance() {
+        return new Library();
+    }
+
     public boolean isPalyndrom(long number) {
         UnaryOperator<Tuple2<Long, Long>> next = t -> t2(t.a == 0 ? -1 : t.a / 10, (10 * t.b) + (t.a % 10));
         Predicate<Tuple2<Long, Long>> hasNext = t -> t.a >= 0;
@@ -21,28 +33,85 @@ public class Library {
         return mirror == n;
     }
 
-    public boolean isPrimeNumber(Collection<Integer> knownPrimeNumbers, Integer v) {
+    private boolean isPrimeNumber(Integer v) {
         var limit = Math.sqrt(v);
         return knownPrimeNumbers.stream().takeWhile(it -> it <= limit).noneMatch(it -> v % it == 0);
     }
 
-    public Stream<Integer> primeNumbers() {
-        return Stream.generate(new Supplier<>() {
-            int count = 0;
-            LinkedList<Integer> knownPrimeNumbers = new LinkedList<>(List.of(2, 3));
+    public IntStream streamPrimeNumbers() {
+        return IntStream.generate(primeNumbers());
+    }
+
+    public IntSupplier primeNumbers() {
+        return new IntSupplier() {
+            private LinkedNode<Integer>.Node node = knownPrimeNumbers.first;
+
+            private int updateNext() {
+                int nextPrime = knownPrimeNumbers.last.v + 2;
+                for (; !isPrimeNumber(nextPrime); nextPrime += 2) ;
+                knownPrimeNumbers.append(nextPrime);
+                return nextPrime;
+            }
 
             @Override
-            public Integer get() {
-                count++;
-                if (count == 1) return 2;
-                else if (count == 2) return 3;
-                else {
-                    int nextPrime = knownPrimeNumbers.getLast() + 2;
-                    for (; !isPrimeNumber(knownPrimeNumbers, nextPrime); nextPrime += 2);
-                    knownPrimeNumbers.addLast(nextPrime);
-                    return nextPrime;
+            public int getAsInt() {
+                if (node != null) {
+                    int ret = node.v;
+                    node = node.next;
+                    return ret;
+                } else {
+                    return updateNext();
                 }
             }
-        });
+        };
+    }
+
+    private static final class LinkedNode<T> implements Iterable<T> {
+        private Node first;
+        private Node last;
+
+        private final class Node {
+            private final T v;
+            private Node next;
+
+            private Node(T v) {
+                this.v = v;
+            }
+        }
+
+        private LinkedNode<T> append(T... values) {
+            Stream.of(values).forEach(v -> {
+                if (first == null) {
+                    first = last = new Node(v);
+                } else {
+                    last.next = new Node(v);
+                    last = last.next;
+                }
+            });
+            return this;
+        }
+
+        @Override
+        public Iterator<T> iterator() {
+            return new Iterator<T>() {
+                Node n = first;
+
+                @Override
+                public boolean hasNext() {
+                    return n != null;
+                }
+
+                @Override
+                public T next() {
+                    T ret = n.v;
+                    n = n.next;
+                    return ret;
+                }
+            };
+        }
+
+        private Stream<T> stream() {
+            return StreamSupport.stream(this.spliterator(), false);
+        }
     }
 }

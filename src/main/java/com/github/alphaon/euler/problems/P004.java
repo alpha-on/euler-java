@@ -14,7 +14,7 @@ import static java.util.stream.Stream.iterate;
  */
 public class P004 {
     public String run() {
-        var lib = new Library();
+        var lib = Library.newInstance();
         Supplier<Stream<Integer>> si = () -> iterate(100, i -> i < 1000, i -> i + 1);
         Supplier<Stream<Integer>> sj = () -> iterate(100, j -> j < 1000, j -> j + 1);
         var maxPalyndrom = si.get().flatMap(i -> sj.get().map(j -> Tuples.t2(i, j)))

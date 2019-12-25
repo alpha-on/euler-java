@@ -3,24 +3,24 @@ package com.github.alphaon.euler.lib.fp;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class Bounce<T> {
-    private Bounce() {
+public abstract class Trampoline<T> {
+    private Trampoline() {
     }
 
-    public static <T> Bounce<T> done(T value) {
+    public static <T> Trampoline<T> done(T value) {
         return new Done<>(value);
     }
 
-    public static <T> Bounce<T> call(Supplier<Bounce<T>> thunk) {
+    public static <T> Trampoline<T> call(Supplier<Trampoline<T>> thunk) {
         return new Call<>(thunk);
     }
 
     public final T eval() {
-        Bounce<?> current = this;
+        Trampoline<?> current = this;
         while (!(current instanceof Done)) {
             if (current instanceof Call) {
                 current = ((Call<?>) current).collapse();
-            } else if (current instanceof Bounce.FlatMap<?, ?>) {
+            } else if (current instanceof Trampoline.FlatMap<?, ?>) {
                 current = ((FlatMap<?, ?>) current).collapse();
             } else {
                 throw new IllegalStateException("Unexpected Bounce type: " + current.getClass().getSimpleName());
@@ -29,15 +29,15 @@ public abstract class Bounce<T> {
         return ((Done<T>) current).v;
     }
 
-    public final <R> Bounce<R> map(Function<T, R> f) {
+    public final <R> Trampoline<R> map(Function<T, R> f) {
         return flatMap(x -> done(f.apply(x)));
     }
 
-    public final <R> Bounce<R> flatMap(Function<T, Bounce<R>> f) {
+    public final <R> Trampoline<R> flatMap(Function<T, Trampoline<R>> f) {
         return new FlatMap<>(this, f);
     }
 
-    private static final class Done<T> extends Bounce<T> {
+    private static final class Done<T> extends Trampoline<T> {
         private final T v;
 
         private Done(T v) {
@@ -50,37 +50,37 @@ public abstract class Bounce<T> {
         }
     }
 
-    private static final class Call<T> extends Bounce<T> {
-        private final Supplier<Bounce<T>> thunk;
+    private static final class Call<T> extends Trampoline<T> {
+        private final Supplier<Trampoline<T>> thunk;
 
-        private Call(Supplier<Bounce<T>> thunk) {
+        private Call(Supplier<Trampoline<T>> thunk) {
             this.thunk = thunk;
         }
 
-        private Bounce<T> collapse() {
+        private Trampoline<T> collapse() {
             return thunk.get();
         }
     }
 
-    private static final class FlatMap<T, R> extends Bounce<R> {
-        private final Bounce<T> src;
-        private final Function<T, Bounce<R>> transform;
+    private static final class FlatMap<T, R> extends Trampoline<R> {
+        private final Trampoline<T> src;
+        private final Function<T, Trampoline<R>> transform;
 
-        private FlatMap(Bounce<T> src, Function<T, Bounce<R>> transform) {
+        private FlatMap(Trampoline<T> src, Function<T, Trampoline<R>> transform) {
             this.src = src;
             this.transform = transform;
         }
 
-        private Bounce<R> collapse() {
+        private Trampoline<R> collapse() {
             if (src instanceof Done) {
                 return transform.apply(((Done<T>) src).v);
             } else if (src instanceof Call) {
-                return new FlatMap<>(((Call<T>) src).thunk.get(), transform);
-            } else if (src instanceof Bounce.FlatMap) {
+                return ((Call<T>) src).thunk.get().flatMap(transform);
+            } else if (src instanceof Trampoline.FlatMap) {
                 FlatMap<Object, T> fmSrc = (FlatMap<Object, T>) src;
                 return new FlatMap<>(
                         fmSrc.src,
-                        (x) -> new FlatMap<>(fmSrc.transform.apply(x), transform)
+                        (x) -> fmSrc.transform.apply(x).flatMap(transform)
                 );
             } else {
                 throw new IllegalStateException("Unexpected Bounce type: " + src.getClass().getSimpleName());

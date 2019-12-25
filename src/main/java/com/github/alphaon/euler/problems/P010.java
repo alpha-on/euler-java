@@ -15,8 +15,8 @@ import static java.util.stream.Stream.iterate;
 public class P010 {
 
     public String run() {
-        Library Lib = new Library();
-        var  res = Lib.primeNumbers().takeWhile( p -> p < 2_000_000).mapToLong(x -> x).sum();
+        Library Lib = Library.newInstance();
+        var  res = Lib.streamPrimeNumbers().takeWhile( p -> p < 2_000_000).mapToLong(x -> x).sum();
 
         return String.valueOf(res);
     }

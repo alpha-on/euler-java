@@ -3,9 +3,7 @@ package com.github.alphaon.euler.problems;
 
 import com.github.alphaon.euler.lib.Library;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * see: <a href="https://projecteuler.net/problem=7">link</a>
@@ -13,8 +11,8 @@ import java.util.List;
 public class P007 {
 
     public String run() {
-        Library Lib = new Library();
-        var  res = Lib.primeNumbers().limit(10_001).max(Comparator.comparingInt(x -> x)).orElseThrow();
+        Library Lib = Library.newInstance();
+        var res = Lib.streamPrimeNumbers().limit(10_001).max().orElseThrow();
 
 //
 //        var knownPrimeNumbers = new LinkedList<>(List.of(2));

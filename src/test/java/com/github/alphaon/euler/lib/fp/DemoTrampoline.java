@@ -4,9 +4,9 @@ import java.math.BigInteger;
 
 public class DemoTrampoline {
 
-    private static Bounce<BigInteger> fact(int n) {
-        if (n <= 0) return Bounce.done(BigInteger.ONE);
-        else return Bounce.call(() -> fact(n - 1)).map(v -> BigInteger.valueOf(n).multiply(v));
+    private static Trampoline<BigInteger> fact(int n) {
+        if (n <= 0) return Trampoline.done(BigInteger.ONE);
+        else return Trampoline.call(() -> fact(n - 1)).map(v -> BigInteger.valueOf(n).multiply(v));
     }
 
     public static void main(String[] args) {
