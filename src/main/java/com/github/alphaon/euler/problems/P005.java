@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import static com.github.alphaon.euler.lib.Tuples.t2;
 
 /**
- * see: <a href="https://projecteuler.net/problem=5">link</a>
+ * see: <a href="https://projecteuler.net/problem=5">Smallest multiple</a>
  */
 public class P005 {
     public String run() {

@@ -6,7 +6,7 @@ import com.github.alphaon.euler.lib.Library;
 import java.util.stream.IntStream;
 
 /**
- * see: <a href="https://projecteuler.net/problem=7">link</a>
+ * see: <a href="https://projecteuler.net/problem=7">10001st prime</a>
  */
 public class P007 {
 

@@ -6,7 +6,7 @@ import static com.github.alphaon.euler.lib.Tuples.t3;
 import static java.util.stream.Stream.iterate;
 
 /**
- * see: <a href="https://projecteuler.net/problem=9">link</a>
+ * see: <a href="https://projecteuler.net/problem=9">Special Pythagorean triplet</a>
  */
 public class P009 {
 

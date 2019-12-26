@@ -2,7 +2,6 @@ package com.github.alphaon.euler.lib;
 
 import java.io.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -21,14 +20,22 @@ public final class Streams {
     }
 
     public static Stream<String> linesWithoutBlank(InputStream in) {
+        return lines(in).map(String::trim).filter(s -> !s.isBlank());
+    }
+
+    public static Stream<String> lines(InputStream in) {
         final var r = new InputStreamReader(in);
-        return new BufferedReader(r).lines().map(String::trim).filter(s -> !s.isBlank()).onClose(() -> {
+        return new BufferedReader(r).lines().onClose(() -> {
             try {
                 in.close();
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
         });
+    }
+
+    public static Stream<String> linesWithoutBlank(String classpathResource) {
+        return linesWithoutBlank(Streams.class.getResourceAsStream(classpathResource));
     }
 
     public static <A, B> Stream<Tuple2<A, B>> product(Stream<A> sA, Function<A, Stream<B>> fsb) {

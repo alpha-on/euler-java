@@ -3,7 +3,7 @@ package com.github.alphaon.euler.problems;
 import java.util.stream.Stream;
 
 /**
- * See: <a href="https://projecteuler.net/problem=1">link</a>
+ * See: <a href="https://projecteuler.net/problem=1">Multiples of 3 and 5</a>
  */
 public class P001 {
     String run() {

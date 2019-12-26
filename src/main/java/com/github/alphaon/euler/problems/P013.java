@@ -11,7 +11,7 @@ import static com.github.alphaon.euler.lib.Streams.linesWithoutBlank;
 public class P013 {
 
     public String run() {
-        try (var data = linesWithoutBlank(P013.class.getResourceAsStream("/data/P013"))) {
+        try (var data = linesWithoutBlank("/data/P013")) {
             var res = data.map(BigInteger::new).reduce(BigInteger.ZERO, BigInteger::add);
             return String.format("%10.10s", res);
         }

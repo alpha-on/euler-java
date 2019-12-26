@@ -10,7 +10,7 @@ import static com.github.alphaon.euler.lib.Tuples.t3;
 import static java.util.stream.Stream.iterate;
 
 /**
- * see: <a href="https://projecteuler.net/problem=10">link</a>
+ * see: <a href="https://projecteuler.net/problem=10">Summation of primes</a>
  */
 public class P010 {
 

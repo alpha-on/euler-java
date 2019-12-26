@@ -3,13 +3,15 @@ package com.github.alphaon.euler.problems;
 
 import com.github.alphaon.euler.lib.Streams;
 
-import java.util.stream.IntStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static com.github.alphaon.euler.lib.Tuples.t2;
+import static java.util.stream.Collectors.toList;
 
 /**
- * see: <a href="https://projecteuler.net/problem=11">link</a>
+ * see: <a href="https://projecteuler.net/problem=11">Largest product in a grid</a>
  */
 public class P011 {
 

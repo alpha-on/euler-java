@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Stream.iterate;
 
 /**
- * see: <a href="https://projecteuler.net/problem=4">link</a>
+ * see: <a href="https://projecteuler.net/problem=4">Largest palindrome product</a>
  */
 public class P004 {
     public String run() {

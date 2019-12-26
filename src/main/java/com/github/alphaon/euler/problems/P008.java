@@ -4,7 +4,7 @@ package com.github.alphaon.euler.problems;
 import com.github.alphaon.euler.lib.Streams;
 
 /**
- * see: <a href="https://projecteuler.net/problem=8">link</a>
+ * see: <a href="https://projecteuler.net/problem=8">Largest product in a series</a>
  */
 public class P008 {
 

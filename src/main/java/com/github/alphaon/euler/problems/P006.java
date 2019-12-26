@@ -2,7 +2,7 @@ package com.github.alphaon.euler.problems;
 
 
 /**
- * see: <a href="https://projecteuler.net/problem=6">link</a>
+ * see: <a href="https://projecteuler.net/problem=6">Sum square difference</a>
  */
 public class P006 {
     public String run() {

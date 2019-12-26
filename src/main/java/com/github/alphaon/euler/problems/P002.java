@@ -6,7 +6,7 @@ import com.github.alphaon.euler.lib.Tuples;
 import java.util.stream.Stream;
 
 /**
- * see: <a href="https://projecteuler.net/problem=2">link</a>
+ * see: <a href="https://projecteuler.net/problem=2">Even Fibonacci numbers</a>
  */
 public class P002 {
     public String run() {

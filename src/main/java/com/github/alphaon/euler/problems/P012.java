@@ -13,7 +13,7 @@ import static com.github.alphaon.euler.lib.fp.Trampoline.done;
 import static java.util.stream.Stream.iterate;
 
 /**
- * see: <a href="https://projecteuler.net/problem=12">link</a>
+ * see: <a href="https://projecteuler.net/problem=12">Highly divisible triangular number</a>
  */
 public class P012 {
     private long triangle(long n) {

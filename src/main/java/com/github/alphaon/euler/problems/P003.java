@@ -6,7 +6,7 @@ import com.github.alphaon.euler.lib.Tuples;
 import java.util.stream.Stream;
 
 /**
- * see: <a href="https://projecteuler.net/problem=3">link</a>
+ * see: <a href="https://projecteuler.net/problem=3">Largest prime factor</a>
  */
 public class P003 {
 
