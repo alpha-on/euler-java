@@ -1,5 +1,8 @@
 package com.github.alphaon.euler.lib.fp;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -13,6 +16,15 @@ public abstract class Trampoline<T> {
 
     public static <T> Trampoline<T> call(Supplier<Trampoline<T>> thunk) {
         return new Call<>(thunk);
+    }
+
+    public static <T> Trampoline<List<T>> all(List<Trampoline<T>> trampolines) {
+        BiFunction<List<T>, List<T>, List<T>> mergeList = (l1, l2) -> new LinkedList<>(l1) {{
+            addAll(l2);
+        }};
+        return trampolines.stream()
+                .map(t -> t.map(List::of))
+                .reduce(done(List.of()), (t1, t2) -> t1.flatMap(l1 -> t2.map(l2 -> mergeList.apply(l1, l2))));
     }
 
     public final T eval() {
