@@ -2,6 +2,8 @@ package com.github.alphaon.euler.lib;
 
 import java.io.*;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -12,15 +14,14 @@ public final class Streams {
     }
 
     public static Stream<Integer> range(int startInclusive, int endExclusive) {
-        if (startInclusive > endExclusive)
-            return IntStream.iterate(startInclusive, i -> i > endExclusive, i -> i - 1).boxed();
-        else return IntStream.range(startInclusive, endExclusive).boxed();
+        return rangeClosed(startInclusive, (startInclusive < endExclusive) ? endExclusive - 1 : endExclusive + 1);
     }
 
     public static Stream<Integer> rangeClosed(int startInclusive, int endInclusive) {
-        if (startInclusive > endInclusive)
-            return IntStream.iterate(startInclusive, i -> i >= endInclusive, i -> i - 1).boxed();
-        else return IntStream.rangeClosed(startInclusive, endInclusive).boxed();
+        var isInc = startInclusive <= endInclusive;
+        IntUnaryOperator next = i -> isInc ? i + 1 : i - 1;
+        IntPredicate hasNext = i -> isInc ? i <= endInclusive : i >= endInclusive;
+        return IntStream.iterate(startInclusive, hasNext, next).boxed();
     }
 
     public static Stream<String> linesWithoutBlank(InputStream in) {
