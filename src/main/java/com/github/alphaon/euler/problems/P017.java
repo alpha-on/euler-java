@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 /**
- * see: <a href="https://projecteuler.net/problem=16">Power digit sum</a>
+ * see: <a href="https://projecteuler.net/problem=17">Power digit sum</a>
  */
 public class P017 {
 

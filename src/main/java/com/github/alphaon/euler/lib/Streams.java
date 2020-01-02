@@ -12,11 +12,15 @@ public final class Streams {
     }
 
     public static Stream<Integer> range(int startInclusive, int endExclusive) {
-        return IntStream.range(startInclusive, endExclusive).boxed();
+        if (startInclusive > endExclusive)
+            return IntStream.iterate(startInclusive, i -> i > endExclusive, i -> i - 1).boxed();
+        else return IntStream.range(startInclusive, endExclusive).boxed();
     }
 
     public static Stream<Integer> rangeClosed(int startInclusive, int endInclusive) {
-        return IntStream.rangeClosed(startInclusive, endInclusive).boxed();
+        if (startInclusive > endInclusive)
+            return IntStream.iterate(startInclusive, i -> i >= endInclusive, i -> i - 1).boxed();
+        else return IntStream.rangeClosed(startInclusive, endInclusive).boxed();
     }
 
     public static Stream<String> linesWithoutBlank(InputStream in) {
