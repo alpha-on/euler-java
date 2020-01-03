@@ -1,6 +1,7 @@
 package com.github.alphaon.euler.lib;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 public class Tuple2<A, B> {
     public final A a;
@@ -17,6 +18,10 @@ public class Tuple2<A, B> {
 
     public B b() {
         return b;
+    }
+
+    public <R> R let(Function<Tuple2<A, B>, R> f) {
+        return f.apply(this);
     }
 
     @Override
