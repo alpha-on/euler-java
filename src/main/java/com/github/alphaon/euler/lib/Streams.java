@@ -1,6 +1,7 @@
 package com.github.alphaon.euler.lib;
 
 import java.io.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
@@ -41,6 +42,11 @@ public final class Streams {
 
     public static Stream<String> linesWithoutBlank(String classpathResource) {
         return linesWithoutBlank(Streams.class.getResourceAsStream(classpathResource));
+    }
+
+    public static <T> Stream<Tuple2<Integer, T>> zipWithIndices(Stream<T> src) {
+        var indices = new AtomicInteger(0);
+        return src.map(v -> t2(indices.incrementAndGet(), v));
     }
 
     public static <A, B> Stream<Tuple2<A, B>> product(Stream<A> sA, Function<A, Stream<B>> fsb) {
