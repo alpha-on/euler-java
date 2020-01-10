@@ -15,9 +15,9 @@ import static com.github.alphaon.euler.lib.Streams.zipWithIndices;
 public class P022 {
     public String run() {
         try (var is = getClass().getResourceAsStream("/data/P022")) {
-            var scanner = new Scanner(is).useDelimiter("\\s*,\\s*");
-            var res = zipWithIndices(scanner.findAll(Pattern.compile("\\w+")).map(MatchResult::group).sorted())
-                    .mapToInt(t -> t.b.chars().map(i -> i - 'A' + 1).sum() * t.a)
+            var scanner = new Scanner(is);
+            var res = scanner.findAll(Pattern.compile("\\w+")).map(MatchResult::group).sorted().map(zipWithIndices())
+                    .mapToInt(t -> t.b.chars().map(i -> i - 'A' + 1).sum() * (t.a + 1))
                     .sum();
             return String.valueOf(res);
 

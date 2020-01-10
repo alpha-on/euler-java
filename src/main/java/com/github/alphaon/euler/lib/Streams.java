@@ -44,10 +44,11 @@ public final class Streams {
         return linesWithoutBlank(Streams.class.getResourceAsStream(classpathResource));
     }
 
-    public static <T> Stream<Tuple2<Integer, T>> zipWithIndices(Stream<T> src) {
+    public static <T> Function<T, Tuple2<Integer, T>> zipWithIndices() {
         var indices = new AtomicInteger(0);
-        return src.map(v -> t2(indices.incrementAndGet(), v));
+        return v -> t2(indices.getAndIncrement(), v);
     }
+
 
     public static <A, B> Stream<Tuple2<A, B>> product(Stream<A> sA, Function<A, Stream<B>> fsb) {
         return sA.flatMap(a -> fsb.apply(a).map(b -> t2(a, b)));
