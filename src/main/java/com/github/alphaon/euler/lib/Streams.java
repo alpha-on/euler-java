@@ -1,17 +1,24 @@
 package com.github.alphaon.euler.lib;
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static com.github.alphaon.euler.lib.Tuples.t2;
 
 public final class Streams {
     private Streams() {
+    }
+
+    public static <T> Stream<T> stream(Supplier<Iterator<T>> iterators) {
+        return StreamSupport.stream(((Iterable<T>) iterators::get).spliterator(), false);
     }
 
     public static Stream<Integer> range(int startInclusive, int endExclusive) {

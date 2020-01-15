@@ -38,6 +38,40 @@ public final class Library {
         return knownPrimeNumbers.stream().takeWhile(it -> it <= limit).noneMatch(it -> v % it == 0);
     }
 
+    public Iterator<Tuple2<Integer, Integer>> primeFactors(int N) {
+        return new Iterator<>() {
+            private int n = Math.abs(N);
+            private int D = (int) Math.sqrt(n); // max divisor
+            private int P = 2; // current prime divisor
+
+            @Override
+            public boolean hasNext() {
+                return n >= 2;
+            }
+
+            @Override
+            public Tuple2<Integer, Integer> next() {
+                int k = 0;
+                while (n % P != 0) {
+                    P = (P >= D) ? n : (P == 2) ? 3 : P + 2;
+                }
+
+                while (n % P == 0) {
+                    k++;
+                    n /= P;
+                }
+                return t2(P, k);
+            }
+        };
+    }
+
+    public int[] divisors(int N) {
+        return Streams.stream(() -> primeFactors(N))
+                .map(t -> IntStream.iterate(1, v -> t.a * v).limit(t.b + 1).toArray())
+                .reduce((s1, s2) -> IntStream.of(s1).flatMap(v1 -> IntStream.of(s2).map(v2 -> v1 * v2)).toArray())
+                .orElse(new int[0]);
+    }
+
     public IntStream streamPrimeNumbers() {
         return IntStream.generate(primeNumbers());
     }
