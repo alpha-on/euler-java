@@ -12,9 +12,7 @@ import static com.github.alphaon.euler.lib.Tuples.t2;
 import static java.util.stream.Stream.iterate;
 
 public final class Library {
-
     private final LinkedNode<Integer> knownPrimeNumbers = new LinkedNode<Integer>().append(2, 3, 5, 7, 11, 13, 17, 19);
-
 
     private Library() {
     }
@@ -31,11 +29,6 @@ public final class Library {
         var n = Math.abs(number);
         var mirror = iterate(t2(n, 0L), hasNext, next).mapToLong(Tuple2::b).max().orElseThrow();
         return mirror == n;
-    }
-
-    private boolean isPrimeNumber(Integer v) {
-        var limit = Math.sqrt(v);
-        return knownPrimeNumbers.stream().takeWhile(it -> it <= limit).noneMatch(it -> v % it == 0);
     }
 
     public Iterator<Tuple2<Integer, Integer>> primeFactors(int N) {
@@ -76,13 +69,22 @@ public final class Library {
         return IntStream.generate(primeNumbers());
     }
 
+    public boolean isPrimeNumber(long N) {
+        return streamPrimeNumbers().takeWhile(p -> p <= Math.sqrt(N)).noneMatch(p -> N % p == 0);
+    }
+
     public IntSupplier primeNumbers() {
         return new IntSupplier() {
             private LinkedNode<Integer>.Node node = knownPrimeNumbers.first;
 
+            private boolean isKnownPrimeNumber(Integer v) {
+                var limit = Math.sqrt(v);
+                return knownPrimeNumbers.stream().takeWhile(it -> it <= limit).noneMatch(it -> v % it == 0);
+            }
+
             private int updateNext() {
                 int nextPrime = knownPrimeNumbers.last.v + 2;
-                for (; !isPrimeNumber(nextPrime); nextPrime += 2) ;
+                for (; !isKnownPrimeNumber(nextPrime); nextPrime += 2) ;
                 knownPrimeNumbers.append(nextPrime);
                 return nextPrime;
             }
@@ -113,6 +115,7 @@ public final class Library {
             }
         }
 
+        @SafeVarargs
         private LinkedNode<T> append(T... values) {
             Stream.of(values).forEach(v -> {
                 if (first == null) {
@@ -127,7 +130,7 @@ public final class Library {
 
         @Override
         public Iterator<T> iterator() {
-            return new Iterator<T>() {
+            return new Iterator<>() {
                 Node n = first;
 
                 @Override
