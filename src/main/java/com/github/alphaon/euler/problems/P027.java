@@ -54,7 +54,7 @@ public class P027 {
         return IntStream.iterate(0, n -> n + 1)
                 .map(n -> n * n + a * n + b)
                 .filter(v -> v > 1)
-                .takeWhile(Lib::isPrimeNumber)
+                .takeWhile(this::isPrimeNumber)
 //                .peek(System.out::println)
                 .count();
     }
