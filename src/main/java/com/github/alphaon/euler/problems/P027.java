@@ -16,6 +16,7 @@ import static com.github.alphaon.euler.lib.Tuples.t3;
  * see: <a href="https://projecteuler.net/problem=27">Quadratic primes</a>
  */
 public class P027 {
+
     private Library Lib = Library.newInstance();
 
     private int maxCoeffs() {
@@ -32,23 +33,11 @@ public class P027 {
         for (int n = 0; ; n++) {
             var v = n * n + a * n + b;
             if (v > 1) {
-                if (this.isPrimeNumber(v)) count++;
+                if (Lib.isPrimeNumber(v)) count++;
                 else return count;
             }
         }
     }
-
-    private boolean isPrimeNumber(int N) {
-        boolean res = false;
-        if (N == 2) {
-            res = true;
-        } else if (N % 2 != 0) {
-            res = true;
-            for (int p = 3; p <= Math.sqrt(N) && (res = ((N % p) != 0)); p += 2) ;
-        }
-        return res;
-    }
-
 
     public String run() {
         var res = maxCoeffs();

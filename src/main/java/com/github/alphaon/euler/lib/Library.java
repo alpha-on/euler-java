@@ -69,8 +69,12 @@ public final class Library {
         return IntStream.generate(primeNumbers());
     }
 
-    public boolean isPrimeNumber(long N) {
-        return streamPrimeNumbers().takeWhile(p -> p <= Math.sqrt(N)).noneMatch(p -> N % p == 0);
+    public boolean isPrimeNumber(int N) {
+        boolean res = true;
+        if (N != 2 && (res = (N % 2 != 0))) {
+            for (int p = 3; p <= Math.sqrt(N) && (res = ((N % p) != 0)); p += 2) ;
+        }
+        return res;
     }
 
     public IntSupplier primeNumbers() {
