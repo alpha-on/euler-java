@@ -109,10 +109,12 @@ public class EulerTest {
     void testP021() {
         Assertions.assertEquals("31626", new P021().run());
     }
+
     @Test
     void testP022() {
         Assertions.assertEquals("871198282", new P022().run());
     }
+
     @Test
     void testP023() {
         Assertions.assertEquals("4179871", new P023().run());
@@ -132,9 +134,15 @@ public class EulerTest {
     void testP026() {
         Assertions.assertEquals("983", new P026().run());
     }
+
     @Test
     void testP027() {
         Assertions.assertEquals("-59231", new P027().run());
+    }
+
+    @Test
+    void testP028() {
+        Assertions.assertEquals("669171001", new P028().run());
     }
 
 }
