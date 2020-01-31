@@ -149,9 +149,15 @@ public class EulerTest {
     void testP029() {
         Assertions.assertEquals("9183", new P029().run());
     }
+
     @Test
     void testP030() {
         Assertions.assertEquals("443839", new P030().run());
+    }
+
+    @Test
+    void testP031() {
+        Assertions.assertEquals("73682", new P031().run());
     }
 
 }
