@@ -83,6 +83,10 @@ public final class Sequence<A> {
         });
     }
 
+    public void forEach(Consumer<A> consumer) {
+        iter.forEachRemaining(consumer);
+    }
+
     public static <A> Sequence<A> from(Iterator<A> iter) {
         return new Sequence<>(iter);
     }
@@ -97,7 +101,7 @@ public final class Sequence<A> {
     }
 
     public static <A> Sequence<A> iterate(A seed, Function<A, A> iteration) {
-        return new Sequence<>(new Iterated<>(seed, iteration));
+        return iterate(seed, iteration, __ -> true);
     }
 
     public static <A> Sequence<A> iterate(A seed, Function<A, A> iteration, Predicate<A> limiter) {
