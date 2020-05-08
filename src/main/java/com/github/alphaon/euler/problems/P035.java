@@ -27,7 +27,7 @@ public class P035 {
     }
 
     private IntStream permutations(int N) {
-        int q = IntStream.iterate(N, nn -> nn >= 10, nn -> nn / 10).map(__ -> 10).reduce(1, (a, b) -> a * b);
+        int q = (int) Math.pow(10, (int) Math.log10(N));
         return IntStream.concat(IntStream.of(N),
                 IntStream.iterate(10 * (N % q) + N / q, nn -> nn != N, nn -> 10 * (nn % q) + nn / q)
         );
